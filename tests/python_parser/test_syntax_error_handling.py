@@ -1171,7 +1171,7 @@ def test_invalid_case_stmt(
         (
             "match a:\n\tcase 1 as 1+1:\n\t\tpass",
             SyntaxError,
-            "invalid pattern target",
+            "cannot use expression as pattern target" if sys.version_info >= (3, 14) else "invalid pattern target",
             (2, 12),
             (2, 15),
         ),
