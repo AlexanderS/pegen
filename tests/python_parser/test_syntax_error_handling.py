@@ -991,26 +991,32 @@ def test_invalid_try_stmt(
                 sys.version_info < (3, 11), reason="Syntax unsupported before 3.11+"
             ),
         ),
-        (
+        pytest.param(
             "try:\n\tpass\nexcept ValueError, IndexError:",
             SyntaxError,
             "multiple exception types must be parenthesized",
             (3, 8),
             (3, 30),
+            marks=pytest.mark.skipif(
+                sys.version_info >= (3, 14), reason="PEP 758 allows unparenthesized except and except* blocks"
+            ),
         ),
-        (
+        pytest.param(
             "try:\n\tpass\nexcept ValueError, IndexError,:",
             SyntaxError,
             "multiple exception types must be parenthesized",
             (3, 8),
             (3, 31),
+            marks=pytest.mark.skipif(
+                sys.version_info >= (3, 14), reason="PEP 758 allows unparenthesized except and except* blocks"
+            ),
         ),
         (
             "try:\n\tpass\nexcept ValueError, IndexError, a=1:",
             SyntaxError,
             "invalid syntax",
-            (3, 18),
-            (3, 19),
+            (3, 33) if sys.version_info >= (3, 14) else (3, 18),
+            (3, 34) if sys.version_info >= (3, 14) else (3, 19),
         ),
         (
             "try:\n\tpass\nexcept Exception\npass",
